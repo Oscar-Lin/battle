@@ -36,15 +36,25 @@ class Actionator(object):
             self.move()
 
     def move(self):
+        self._map.get_point(self._unit)
+        path = self.get_path()
+        #CompositeDirection
+        #target = self.get_target()
+
+
+        for point in path:
+            attacker = self._pl.get_attackers(point)
+
         """
                         get location
                         get path  list of points
-                            sigh range, enemy ally
+                            sight range, enemy ally
                             attack range, enemy
 
 
                         for point in path:
-                            check pl
+                            check perimeter listener
+                            check target, action_limit
                         jump to destination
                         set pl
 
@@ -55,12 +65,12 @@ class Actionator(object):
         pass
 
     def get_target(self):
-        self._get_targets_in_range()
-        self._get_targets_in_sight()
+        # self._get_targets_in_range()
+        # self._get_targets_in_sight()
 
     def get_path(self):
         max_mv = self._get_max_mv()
-        self._mc.get_movement_points_with_path(self._map.get_point(self._unit), max_mv)
+        return self._mc.get_movement_points_with_path(self._map.get_point(self._unit), max_mv)
 
     def _get_max_mv(self):
         return self._unit.get_action_points()
