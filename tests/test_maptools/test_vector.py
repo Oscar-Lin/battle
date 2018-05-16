@@ -1,7 +1,9 @@
 import unittest
 
+from math import sqrt
+
 from battle.maptools.vector import Vector, DangerOpportunity
-from battle.maptools.direction import Direction
+from battle.maptools.direction import Direction, CompositeDirection
 
 N, S, E, W = Direction
 
@@ -36,6 +38,12 @@ class TestVector(unittest.TestCase):
         v = Vector.from_dir_and_mag(W, 10)
         self.assertEqual(v.x, -10)
         self.assertEqual(v.y, 0)
+
+    def test_from_dir_and_mag_composite_direction(self):
+        v = Vector.from_dir_and_mag(CompositeDirection(N, E), 5)
+        expected_x_y = 5 / sqrt(2)
+        self.assertAlmostEqual(v.x, expected_x_y, places=7)
+        self.assertAlmostEqual(v.y, expected_x_y, places=7)
 
     def test_add(self):
         v1 = Vector(3, 6)
