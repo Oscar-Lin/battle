@@ -21,7 +21,7 @@ class PerimeterListener(object):
 
     def _get_range_dict(self, unit, point):
         max_range = unit.get_perimeter_size()
-        if isinstance(unit.get_weapon(), RangedWeapon):
+        if not unit.get_weapon().is_melee_weapon():
             range_dict = self._range_finder.get_attack_ranges_ranged(point, max_range)
         else:
             range_dict = self._range_finder.get_attack_ranges_melee(point, max_range)

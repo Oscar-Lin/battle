@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from battle.maptools.vector import DangerOpportunity
 from battle.maptools.footprint import FootPrint, FootPrintPackage, Token
@@ -13,7 +14,7 @@ from battle.players.action import Action
 
 
 class Actionator(object):
-    def __init__(self, unit: Soldier, action: Action, perimeter_listener: PerimeterListener, map_: Map, teams: list):
+    def __init__(self, unit: Soldier, action: Action, perimeter_listener: PerimeterListener, map_: Map, teams: List[Team]):
         self._unit = unit
         self._action = action
         self._pl = perimeter_listener
@@ -36,80 +37,46 @@ class Actionator(object):
             self.move()
 
     def move(self):
-        self._map.get_point(self._unit)
-        path = self.get_path()
-        #CompositeDirection
-        #target = self.get_target()
-
-
+        current_pt = self._map.get_point(self._unit)
+        mv_pts, path = self.get_path()  # a generator of pts not including current point
+        ally = None  # type: Team
+        for team in self._teams:
+            if team.is_on_team(self._unit):
+                ally = team
+                break
+        end_point = current_pt
         for point in path:
-            attacker = self._pl.get_attackers(point)
-
-        """
-                        get location
-                        get path  list of points
-                            sight range, enemy ally
-                            attack range, enemy
-
-
-                        for point in path:
-                            check perimeter listener
-                            check target, action_limit
-                        jump to destination
-                        set pl
-
-                        pseudo-code
-                        """
+            end_point = point
+            attackers = self._pl.get_attackers(point) # type: List[Soldier]
+            for attacker in attackers:
+                if not ally.is_on_team(attacker) and attacker.can_act(attacker.get_weapon().action_pts):
+                    attacker.attack(self._unit)
+        self._unit.move(mv_pts)
+        self._map.remove_unit(current_pt)
+        self._map.place_unit(self._unit, end_point)
+        self._pl.rm_perimeter(self._unit)
+        self._pl.set_perimeter(self._unit, end_point)
 
     def attack(self):
         pass
 
     def get_target(self):
+        pass
         # self._get_targets_in_range()
         # self._get_targets_in_sight()
 
     def get_path(self):
         max_mv = self._get_max_mv()
-        return self._mc.get_movement_points_with_path(self._map.get_point(self._unit), max_mv)
+        location = self._map.get_point(self._unit)
+        raw = self._mc.get_movement_points_with_path(location, max_mv)
+
+        mv_pts, destination_path = max(raw.values()) # TODO
+
+        return mv_pts, location.generate_path(destination_path)
 
     def _get_max_mv(self):
         return self._unit.get_action_points()
 
-
-    """
-    hw - type out in pseudo-code, how you will decide where someone moves and how far?
-    actions:
-    NULL
-
-    GO
-    STAY
-    ATTACK
-
-    ENEMY
-    ALLY
-
-    NEAREST
-    FURTHEST
-
-    STRONGEST
-    WEAKEST
-
-    HIGHEST
-    LOWEST
-
-    HEALTH
-    WEAPON
-    CONCENTRATION
-
-    OPPORTUNITY
-    DANGER
-
-    TOWARDS
-    AWAY
-
-
-
-    """
 
 
 class TurnCoordinator(object):
