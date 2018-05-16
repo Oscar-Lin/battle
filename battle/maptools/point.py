@@ -1,4 +1,4 @@
-from battle.maptools.direction import Direction
+from battle.maptools.direction import Direction, CompositeDirection
 from typing import List, Any, Generator
 
 
@@ -50,6 +50,29 @@ class Point(object):
     def in_direction(self, direction: Direction) -> 'Point':
         del_x, del_y = direction.value
         return self.plus(del_x, del_y)
+
+    def get_direction_to(self, point: 'Point') -> CompositeDirection:
+        """
+
+        :param point: target `Point`
+        :return: CompositeDirection - a hashable immutable object with `value` = (x, y) such that x**2 + y**2 = 1
+        :raises ValueError: if `self.get_direction_to(pt)` where `pt==self`.
+        """
+        del_x = point.x - self.x
+        del_y = point.y - self.y
+        if del_x > 0:
+            x_dir = [E] * del_x
+        else:
+            x_dir = [W] * -del_x
+
+        if del_y > 0:
+            y_dir = [N] * del_y
+        else:
+            y_dir = [S] * -del_y
+
+        total = x_dir + y_dir
+
+        return CompositeDirection(*total)
 
     def plus(self, x: int, y: int) -> 'Point':
         return Point(self._x + x, self._y + y)
