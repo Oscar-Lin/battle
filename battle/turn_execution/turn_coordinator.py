@@ -102,6 +102,9 @@ class TurnCoordinator(object):
         random.shuffle(turn_order)
         self._unmoved_units = turn_order
 
+    def show_turn_order(self):
+        return self._unmoved_units[:]
+
     def get_action_list(self, unit: Soldier):
         point = self._map.get_point(unit)
         ally, enemy = self.get_ally_enemy(unit)

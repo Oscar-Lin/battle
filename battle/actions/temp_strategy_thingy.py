@@ -3,7 +3,7 @@ from battle.actions.target import Target
 from battle.actions.temp_action_thingy import TempAction
 
 
-class TempStrategy(object):
+class ActionChooser(object):
 
     def __init__(self, primary: ActionPackage, secondary: ActionPackage, tertiary: ActionPackage):
         self.primary = primary
