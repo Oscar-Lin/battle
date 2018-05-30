@@ -1,4 +1,6 @@
-from battle.maptools.direction import Direction
+from typing import Union
+
+from battle.maptools.direction import Direction, CompositeDirection
 
 
 class Vector(object):
@@ -7,7 +9,7 @@ class Vector(object):
         self._y = y
 
     @classmethod
-    def from_dir_and_mag(cls, direction: Direction, magnitude: int):
+    def from_dir_and_mag(cls, direction: Union[Direction, CompositeDirection], magnitude: int):
         base_x, base_y = direction.value
         return cls(base_x * magnitude, base_y * magnitude)
 

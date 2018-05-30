@@ -1,6 +1,8 @@
 import unittest
 
-from battle.maptools.direction import Direction
+from math import sqrt
+
+from battle.maptools.direction import Direction, CompositeDirection
 
 N, W, S, E = Direction.N, Direction.W, Direction.S, Direction.E
 
@@ -153,3 +155,92 @@ class TestDirection(unittest.TestCase):
         self.assertTrue(S >= S)
         self.assertTrue(W >= W)
         self.assertTrue(E >= E)
+
+    def test_CompositeDirection_string(self):
+        test = CompositeDirection(N, N, W, S, E)
+        self.assertEqual(str(test), 'NNWSE')
+
+    def test_CompositeDirection_name(self):
+        test = CompositeDirection(N, N, W, S, E)
+        self.assertEqual(test.name, 'NNWSE')
+
+    def test_CompositeDirection_repr(self):
+        test = CompositeDirection(N, N, W)
+        self.assertEqual(repr(test), 'CompositeDirection(Direction.N, Direction.N, Direction.W)')
+
+    def test_CompositeDirection_value_one_element(self):
+        for direction in Direction:
+            float_vals = tuple(float(val) for val in direction.value)
+            self.assertEqual(float_vals, CompositeDirection(direction).value)
+
+    def test_CompositeDirection_value_two_elements(self):
+        rt_two_over_two = sqrt(2)/2
+
+        self.assertAlmostEqual(CompositeDirection(N, E).value[0], rt_two_over_two, places=7)
+        self.assertAlmostEqual(CompositeDirection(N, E).value[1], rt_two_over_two, places=7)
+
+        self.assertAlmostEqual(CompositeDirection(N, W).value[0], -rt_two_over_two, places=7)
+        self.assertAlmostEqual(CompositeDirection(N, W).value[1], rt_two_over_two, places=7)
+
+        self.assertAlmostEqual(CompositeDirection(S, E).value[0], rt_two_over_two, places=7)
+        self.assertAlmostEqual(CompositeDirection(S, E).value[1], -rt_two_over_two, places=7)
+
+        self.assertAlmostEqual(CompositeDirection(S, W).value[0], -rt_two_over_two, places=7)
+        self.assertAlmostEqual(CompositeDirection(S, W).value[1], -rt_two_over_two, places=7)
+
+    def test_CompositeDirection_more_values(self):
+
+        self.assertAlmostEqual(CompositeDirection(N, N, W).value[0], -1/sqrt(5), places=7)
+        self.assertAlmostEqual(CompositeDirection(N, N, W).value[1], 2/sqrt(5), places=7)
+
+        self.assertAlmostEqual(CompositeDirection(S, S, S, E).value[0], 1/sqrt(10), places=7)
+        self.assertAlmostEqual(CompositeDirection(S, S, S, E).value[1], -3/sqrt(10), places=7)
+
+    def test_CompositeDirection_eq_ne(self):
+        self.assertEqual(CompositeDirection(N, N, W), CompositeDirection(W, N, N))
+
+        self.assertNotEqual(CompositeDirection(N, N, W), CompositeDirection(N, N, N, W))
+
+        self.assertNotEqual(CompositeDirection(N), N)
+
+    def test_CompositeDirection_hash(self):
+        self.assertEqual(hash(CompositeDirection(N, W)), hash(CompositeDirection(W, N)))
+
+        test = CompositeDirection(N, N, W, N)
+        self.assertEqual(hash(test), hash(test.value))
+
+    def test_CompositeDirection_opposite(self):
+        test = CompositeDirection(N, N, E)
+        self.assertEqual(test.opposite(), CompositeDirection(S, S, W))
+
+    def test_CompositeDirection_left(self):
+        test = CompositeDirection(N, N, E)
+        self.assertEqual(test.left(), CompositeDirection(W, W, N))
+        self.assertEqual(test.left(), CompositeDirection(N, W, W))
+
+    def test_CompositeDirection_right(self):
+        test = CompositeDirection(N, N, E)
+        self.assertEqual(test.right(), CompositeDirection(E, E, S))
+
+    def test_CompositeDirection_opposite_directions(self):
+        self.assertEqual(CompositeDirection(N, N, S), CompositeDirection(N, N, N))
+
+    def test_CompositeDirection_empty_value_raises_value_error(self):
+        self.assertRaises(ValueError, CompositeDirection, N, S)
+        self.assertRaises(ValueError, CompositeDirection, E, W)
+        self.assertRaises(ValueError, CompositeDirection, N, S, E, W)
+        self.assertRaises(ValueError, CompositeDirection, N, N, S, S, E, W)
+
+    def test_CompositeDirection_is_unit_vector(self):
+
+        test = CompositeDirection(N, N, W)
+        self.assertAlmostEqual(sum(val**2 for val in test.value), 1.0, places=7)
+
+        test = CompositeDirection(S, S, E, S)
+        self.assertAlmostEqual(sum(val**2 for val in test.value), 1.0, places=7)
+
+        test = CompositeDirection(W, W, N)
+        self.assertAlmostEqual(sum(val**2 for val in test.value), 1.0, places=7)
+
+        test = CompositeDirection(S, S, W, W, W)
+        self.assertAlmostEqual(sum(val**2 for val in test.value), 1.0, places=7)

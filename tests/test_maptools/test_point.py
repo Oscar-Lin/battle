@@ -1,6 +1,8 @@
 import unittest
 
-from battle.maptools.direction import Direction
+from math import sqrt
+
+from battle.maptools.direction import Direction, CompositeDirection
 from battle.maptools.point import Point
 
 N, S, E, W = Direction.N, Direction.S, Direction.E, Direction.W
@@ -193,6 +195,47 @@ class TestPoint(unittest.TestCase):
         the_path = list(start.generate_path([N, E, S, W]))
         expected = [Point(-1, -1), Point(0, -1), Point(0, -2), Point(-1, -2)]
         self.assertEqual(the_path, expected)
+
+    def test_get_direction_to_north(self):
+        start = Point(1, 2)
+        end = Point(1, 4)
+        answer = start.get_direction_to(end)
+        self.assertEqual(answer, CompositeDirection(N))
+        self.assertEqual(answer.value, (0, 1.0))
+
+    def test_get_direction_to_south(self):
+        start = Point(1, 2)
+        end = Point(1, 0)
+        answer = start.get_direction_to(end)
+        self.assertEqual(answer, CompositeDirection(S))
+        self.assertEqual(answer.value, (0, -1.0))
+
+    def test_get_direction_to_east(self):
+        start = Point(1, 2)
+        end = Point(3, 2)
+        answer = start.get_direction_to(end)
+        self.assertEqual(answer, CompositeDirection(E))
+        self.assertEqual(answer.value, (1.0, 0))
+
+    def test_get_direction_to_west(self):
+        start = Point(1, 2)
+        end = Point(-1, 2)
+        answer = start.get_direction_to(end)
+        self.assertEqual(answer, CompositeDirection(W))
+        self.assertEqual(answer.value, (-1.0, 0))
+
+    def test_get_direction_to_combination(self):
+        start = Point(1, 2)
+        end = Point(5, 0)
+        answer = start.get_direction_to(end)
+        self.assertEqual(answer, CompositeDirection(E, E, E, E, S, S))
+        magnitude = sqrt(20)
+        self.assertAlmostEqual(answer.value[0], 4/magnitude, places=7)
+        self.assertAlmostEqual(answer.value[1], -2/magnitude, places=7)
+
+    def test_get_direction_to_self_raises_value_error(self):
+        pt = Point(1, 2)
+        self.assertRaises(ValueError, pt.get_direction_to, pt)
 
 
 if __name__ == '__main__':
