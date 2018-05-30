@@ -57,8 +57,8 @@ class Actionator(object):
         self._pl.rm_perimeter(self._unit)
         self._pl.set_perimeter(self._unit, end_point)
 
-    def attack(self):
-        pass
+    def attack(self):  # TODO experimental idea
+        self._unit.attack(self.get_target())
 
     def get_target(self):
         pass
@@ -76,7 +76,6 @@ class Actionator(object):
 
     def _get_max_mv(self):
         return self._unit.get_action_points()
-
 
 
 class TurnCoordinator(object):

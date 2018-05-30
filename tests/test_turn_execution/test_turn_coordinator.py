@@ -8,10 +8,13 @@ from battle.maptools.map import Map
 from battle.players.team import Team
 from battle.players.units import Soldier
 from battle.perimiterlistener import PerimeterListener
-from battle.rangefinder import RangeFinder
-from battle.movementcalculator import MovementCalculator
-from battle.turn_execution.target_finder import TargetFinder
-from battle.players.action import Action
+from battle.maptools.footprint import FootPrintPackage, FootPrint, Token
+from battle.maptools.vector import Vector
+from battle.maptools.direction import Direction
+
+
+N, S, E, W = Direction
+
 
 class TestTurnCoordinator(unittest.TestCase):
     def setUp(self):
@@ -61,8 +64,15 @@ class TestTurnCoordinator(unittest.TestCase):
         self.assertNotEqual(all_units, turn_order_2)
         self.assertNotEqual(turn_order, turn_order_2)
 
-    def test_get_action_list(self):
-        pass
+    def test_get_action_list(self):  # TODO  UNFINISHED TEST
+        fpp = FootPrintPackage()
+        fp_1 = FootPrint(Token.DANGER, W, self.team_a)
+        fp_2 = FootPrint(Token.NEUTRAL, N, self.team_b)
+        fpp.push(fp_1)
+        fpp.push(fp_2)
+        self.map.place_unit(self.a_units[0], Point(1, 1))
+        expected = self.tc.get_action_list(self.a_units[0])
+        print(expected)
 
     def test_do_actions(self):
         pass

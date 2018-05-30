@@ -2,6 +2,7 @@ import random
 from typing import List
 
 from battle.maptools.footprint import DangerOpportunity
+from battle.actions.temp_strategy_thingy import ActionChooser
 from battle.players.action import Action
 
 
@@ -18,6 +19,5 @@ class StupidStrategy(Strategy):
         super(StupidStrategy, self).__init__()
 
     def get_action(self, ally, enemy):
-        actions = Action.to_list()
-        random.shuffle(actions)
+        actions = ActionChooser('oops', 'i', 'orangutan')
         return actions
