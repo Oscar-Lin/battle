@@ -1,11 +1,11 @@
-from battle.actions.action_package import ActionPackage
+from battle.actions.composite_action import CompositeAction
 from battle.actions.target import Target
-from battle.actions.temp_action_thingy import TempAction
+from battle.actions.action import Action
 
 
-class ActionChooser(object):
+class ActionPack(object):
 
-    def __init__(self, primary: ActionPackage, secondary: ActionPackage, tertiary: ActionPackage):
+    def __init__(self, primary: CompositeAction, secondary: CompositeAction, tertiary: CompositeAction):
         self.primary = primary
         self.secondary = secondary
         self.tertiary = tertiary

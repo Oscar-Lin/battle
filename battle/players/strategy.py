@@ -2,15 +2,14 @@ import random
 from typing import List
 
 from battle.maptools.footprint import DangerOpportunity
-from battle.actions.temp_strategy_thingy import ActionChooser
-from battle.players.action import Action
+from battle.actions.action_pack import ActionPack
 
 
 class Strategy(object):
     def __init__(self):
         pass
 
-    def get_action(self, ally: DangerOpportunity, enemy: DangerOpportunity) -> List[Action]:
+    def get_action(self, ally: DangerOpportunity, enemy: DangerOpportunity):
         raise NotImplementedError
 
 
@@ -19,5 +18,5 @@ class StupidStrategy(Strategy):
         super(StupidStrategy, self).__init__()
 
     def get_action(self, ally, enemy):
-        actions = ActionChooser('oops', 'i', 'orangutan')
+        actions = ActionPack('oops', 'i', 'orangutan')
         return actions

@@ -10,11 +10,10 @@ from battle.perimiterlistener import PerimeterListener
 from battle.rangefinder import RangeFinder
 from battle.movementcalculator import MovementCalculator
 from battle.turn_execution.target_finder import TargetFinder
-from battle.players.action import Action
 
 
 class Actionator(object):
-    def __init__(self, unit: Soldier, action: Action, perimeter_listener: PerimeterListener, map_: Map, teams: List[Team]):
+    def __init__(self, unit: Soldier, action, perimeter_listener: PerimeterListener, map_: Map, teams: List[Team]):
         self._unit = unit
         self._action = action
         self._pl = perimeter_listener
@@ -30,11 +29,12 @@ class Actionator(object):
         tf = TargetFinder(self._map, self._teams)
         return tf.enemies_in_sight(self._unit)
     
-    def go(self):
-        if self._action.has_any(Action.ATTACK):
-            self.attack()
-        else:
-            self.move()
+    def go(self):  # TODO do something
+        # if self._action.has_any(Action.ATTACK):
+        #     self.attack()
+        # else:
+        #     self.move()
+        pass
 
     def move(self):
         current_pt = self._map.get_point(self._unit)

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class TempAction(Enum):
+class Action(Enum):
 
     ATTACK = 1
     MOVE = 2

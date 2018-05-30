@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Union, Tuple
+from math import sqrt
 
 from battle.maptools.direction import Direction, CompositeDirection
 
@@ -44,6 +45,23 @@ class Vector(object):
 
     def __repr__(self):
         return 'Vector({}, {})'.format(self.x, self.y)
+
+    def to_dir_and_mag(self) -> Tuple[CompositeDirection, float]: # TODO test
+        if self == Vector(0, 0):
+            return CompositeDirection(Direction.N), 0.0
+
+        if self.x > 0:
+            x_dir = Direction.E
+        else:
+            x_dir = Direction.W
+        if self.y > 0:
+            y_dir = Direction.N
+        else:
+            y_dir = Direction.S
+        total_dir = abs(self.x)*[x_dir] + abs(self.y)*[y_dir]
+        direction = CompositeDirection(*total_dir)
+        magnitude = sqrt(self.x**2 + self.y**2)
+        return direction, magnitude
 
 
 class DangerOpportunity(object):

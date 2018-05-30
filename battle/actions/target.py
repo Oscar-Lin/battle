@@ -33,3 +33,7 @@ class Target(Flag):
 
     def has_at_least(self, other: "Target"):
         return (self & other) == other
+
+    @classmethod
+    def to_list(cls):
+        return sorted(cls.__members__.values(), key= lambda action: action.name)
