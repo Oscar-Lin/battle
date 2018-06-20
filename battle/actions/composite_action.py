@@ -24,3 +24,6 @@ class CompositeAction(object):
     def __hash__(self):
         return hash(repr(self))
 
+    def __bool__(self):
+        return self != self.null_action()
+

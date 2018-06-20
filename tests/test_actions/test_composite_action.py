@@ -42,5 +42,13 @@ class TestCompositeAction(unittest.TestCase):
     def test_null_action(self):
         self.assertEqual(CompositeAction.null_action(), CompositeAction(Action.NULL, Target.NULL, 0))
 
+    def test_bool_true(self):
+        for action in Action:
+            for target in Target:
+                self.assertTrue(CompositeAction(action, target, 1))
+                if action != Action.NULL or target != Target.NULL:
+                    self.assertTrue(CompositeAction(action, target, 0))
 
+    def test_bool_false(self):
+        self.assertFalse(CompositeAction.null_action())
 

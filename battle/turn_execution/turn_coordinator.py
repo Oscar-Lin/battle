@@ -3,6 +3,7 @@ from typing import List
 
 from battle.maptools.vector import DangerOpportunity
 from battle.maptools.footprint import FootPrint, FootPrintPackage, Token
+from battle.actions.composite_action_pack import CompositeAction, CompositeActionPack
 from battle.maptools.map import Map
 from battle.players.team import Team
 from battle.players.units import Soldier
@@ -104,7 +105,7 @@ class TurnCoordinator(object):
     def show_turn_order(self):
         return self._unmoved_units[:]
 
-    def get_action_list(self, unit: Soldier):
+    def get_action_pack(self, unit: Soldier) -> CompositeActionPack:
         point = self._map.get_point(unit)
         ally, enemy = self.get_ally_enemy(unit)
         vectors = self._map.get_tile(point).footprint_vectors()
@@ -113,11 +114,12 @@ class TurnCoordinator(object):
         return unit.strategy.get_action(ally_vector, enemy_vector)
 
     def do_actions(self, unit: Soldier):
-        action_list = self.get_action_list(unit)
-        while unit.get_action_points():
-            for action in action_list:
-                actionator = Actionator(unit, action, self._pm, self._map, [self._team_1, self._team_2])
-                actionator.go()
+        action_pack = self.get_action_pack(unit)
+        next_action = action_pack.get_next_action(unit.get_action_points())
+        while next_action:
+            actionator = Actionator(unit, next_action, self._pm, self._map, [self._team_1, self._team_2])
+            actionator.go()
+            next_action = action_pack.get_next_action(unit.get_action_points())
                 
     def one_turn(self):
         self.create_turn_order()

@@ -71,7 +71,7 @@ class TestTurnCoordinator(unittest.TestCase):
         fpp.push(fp_1)
         fpp.push(fp_2)
         self.map.place_unit(self.a_units[0], Point(1, 1))
-        expected = self.tc.get_action_list(self.a_units[0])
+        expected = self.tc.get_action_pack(self.a_units[0])
         print('test_turn_coordinator', expected)
 
     def test_do_actions(self):
